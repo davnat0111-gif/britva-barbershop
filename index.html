@@ -70,13 +70,13 @@ h2{font-size:clamp(32px,5vw,62px);line-height:1;font-weight:700;margin-bottom:16
 .svc::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(224,180,108,.16),transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
 .svc:hover{border-color:rgba(224,180,108,.4)}
 .svc:hover::before{opacity:1}
-.svc .num{font:700 13px Unbounded;color:var(--soft)}
+.svc .num{font:700 13px Unbounded,sans-serif;color:var(--soft)}
 .svc h3{margin:44px 0 8px;font:700 22px Unbounded,sans-serif;letter-spacing:-.02em;transform:translateZ(30px)}
 .svc p{color:var(--soft);font-size:15px;min-height:48px}
 .svc .row{display:flex;justify-content:space-between;align-items:end;margin-top:22px;transform:translateZ(20px)}
-.price{font:700 22px Unbounded;color:var(--gold2);white-space:nowrap}
+.price{font:700 22px Unbounded,sans-serif;color:var(--gold2);white-space:nowrap}
 .dur{color:var(--soft);font-size:13px}
-.svc button{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:9px 16px;cursor:pointer;font:500 14px Manrope;transition:.2s}
+.svc button{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:9px 16px;cursor:pointer;font:500 14px Manrope,sans-serif;transition:.2s}
 .svc button:hover{background:var(--gold);color:#1b140b;border-color:var(--gold)}
 
 /* мастера */
@@ -84,9 +84,9 @@ h2{font-size:clamp(32px,5vw,62px);line-height:1;font-weight:700;margin-bottom:16
 .master{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;border:1px solid var(--line);background:#111}
 .master .ph{position:absolute;inset:0;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
 .master:hover .ph{transform:scale(1.06)}
-.master .ph::after{content:attr(data-l);position:absolute;right:-10px;bottom:-40px;font:900 260px/1 Unbounded;color:rgba(255,255,255,.07)}
+.master .ph::after{content:attr(data-l);position:absolute;right:-10px;bottom:-40px;font:900 260px/1 Unbounded,sans-serif;color:rgba(255,255,255,.07)}
 .master .info{position:absolute;left:0;right:0;bottom:0;padding:24px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
-.master h3{font:700 26px Unbounded}
+.master h3{font:700 26px Unbounded,sans-serif}
 .master p{color:#cfc6ba;font-size:14px}
 .master .pill{position:absolute;top:18px;left:18px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px}
 
@@ -100,9 +100,9 @@ h2{font-size:clamp(32px,5vw,62px);line-height:1;font-weight:700;margin-bottom:16
 .pane{display:none}
 .pane.on{display:block;animation:fade .45s cubic-bezier(.2,.7,.2,1)}
 @keyframes fade{from{opacity:0;transform:translateX(20px)}}
-.pane h3{font:700 24px Unbounded;margin-bottom:18px}
+.pane h3{font:700 24px Unbounded,sans-serif;margin-bottom:18px}
 .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.opt{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:16px;padding:15px;cursor:pointer;color:var(--txt);text-align:left;font:500 15px Manrope;transition:border-color .15s,background .15s,transform .15s}
+.opt{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:16px;padding:15px;cursor:pointer;color:var(--txt);text-align:left;font:500 15px Manrope,sans-serif;transition:border-color .15s,background .15s,transform .15s}
 .opt small{display:block;color:var(--soft);font-size:13px;margin-top:3px}
 .opt:hover{border-color:rgba(224,180,108,.4);transform:translateY(-1px)}
 .opt.sel{border-color:var(--gold);background:rgba(224,180,108,.12);box-shadow:0 0 0 3px rgba(224,180,108,.12)}
@@ -110,26 +110,26 @@ h2{font-size:clamp(32px,5vw,62px);line-height:1;font-weight:700;margin-bottom:16
 .days,.times{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
 .days .opt,.times .opt{text-align:center;padding:11px 6px}
 .times{margin-top:16px}
-input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--txt);font:500 16px Manrope;margin-bottom:12px;transition:border-color .2s}
+input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--txt);font:500 16px Manrope,sans-serif;margin-bottom:12px;transition:border-color .2s}
 input:focus{outline:none;border-color:var(--gold)}
 .err{color:#ff8a7a;font-size:14px;min-height:20px}
 .nav{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
 .summary{position:relative;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:22px;padding:24px;align-self:start}
-.summary h4{font:500 13px Manrope;color:var(--soft);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+.summary h4{font:500 13px Manrope,sans-serif;color:var(--soft);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
 .summary .li{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:15px}
 .summary .li span{color:var(--soft)}
 .summary .li b{text-align:right;font-weight:600}
 .summary .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px}
-.summary .total b{font:700 30px Unbounded;color:var(--gold2)}
+.summary .total b{font:700 30px Unbounded,sans-serif;color:var(--gold2)}
 .done{text-align:center;padding:24px 0}
 .check{width:88px;height:88px;border-radius:50%;background:rgba(127,210,154,.12);border:1px solid rgba(127,210,154,.4);color:var(--ok);display:grid;place-items:center;font-size:42px;margin:0 auto 20px;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(0) rotate(-90deg)}}
 .done p{color:var(--soft)}
-.code{font:700 34px Unbounded;color:var(--gold2);margin:14px 0}
+.code{font:700 34px Unbounded,sans-serif;color:var(--gold2);margin:14px 0}
 
 .reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
 .rev{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px}
-.rev .q{font:900 60px/0.6 Unbounded;color:var(--gold);height:30px}
+.rev .q{font:900 60px/0.6 Unbounded,sans-serif;color:var(--gold);height:30px}
 .rev p{margin:8px 0 18px;font-size:17px}
 .rev span{color:var(--soft);font-size:14px}
 .stars{color:var(--gold);letter-spacing:2px}
