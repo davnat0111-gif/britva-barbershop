@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Бритва — барбершоп</title>
+<meta name="description" content="Демо-сайт барбершопа: 3D-сцена на Three.js и онлайн-запись за 4 шага.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08070a;--card:rgba(255,255,255,.035);--line:rgba(255,255,255,.09);--txt:#f5efe6;--soft:#9d958b;--gold:#e0b46c;--gold2:#ffd99a;--red:#e2463b;--ok:#7fd29a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:400 16px/1.6 Manrope,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.05;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.disp{font-family:Unbounded,Manrope,sans-serif;letter-spacing:-.02em}
+
+header{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:30;width:min(1160px,calc(100% - 24px));
+ display:flex;align-items:center;justify-content:space-between;padding:10px 10px 10px 22px;border-radius:999px;
+ background:rgba(20,18,22,.55);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--line)}
+.logo{font:700 20px Unbounded,sans-serif;text-decoration:none;letter-spacing:-.02em}
+.logo i{font-style:normal;color:var(--gold)}
+nav{display:flex;align-items:center;gap:26px}
+nav a{color:var(--soft);text-decoration:none;font-size:15px;transition:color .2s}
+nav a:hover{color:var(--txt)}
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1b140b;font-weight:700;border:0;border-radius:999px;padding:15px 28px;font-size:16px;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;font-family:inherit}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(224,180,108,.35)}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.ghost{background:rgba(255,255,255,.04);color:var(--txt);border:1px solid var(--line)}
+header .btn{padding:11px 20px;font-size:14px}
+
+/* HERO */
+.hero{position:relative;height:100vh;min-height:680px;overflow:hidden}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:30%;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.hero .wrap{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;pointer-events:none}
+.hero .wrap>*{pointer-events:auto}
+.tag{display:inline-flex;align-items:center;gap:8px;color:var(--gold2);background:rgba(224,180,108,.08);border:1px solid rgba(224,180,108,.25);border-radius:999px;padding:6px 14px;font-size:13px;margin-bottom:26px;width:max-content}
+.tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)}
+h1{font-size:clamp(40px,7.2vw,104px);line-height:.95;font-weight:900;max-width:760px}
+h1 .gr{background:linear-gradient(100deg,var(--gold2),var(--gold) 40%,#c66b3d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--soft);font-size:clamp(16px,1.6vw,19px);max-width:470px;margin:26px 0 36px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.scroll{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:3;color:var(--soft);font-size:12px;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll::after{content:"";width:1px;height:44px;background:linear-gradient(var(--gold),transparent);animation:drip 1.8s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* бегущая строка */
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding:22px 0;background:rgba(255,255,255,.015)}
+.marquee div{display:flex;gap:48px;width:max-content;animation:run 30s linear infinite;font:700 clamp(22px,3vw,38px) Unbounded,sans-serif;color:transparent;-webkit-text-stroke:1px rgba(245,239,230,.35)}
+.marquee span:nth-child(odd){color:var(--txt);-webkit-text-stroke:0}
+.marquee b{color:var(--gold);-webkit-text-stroke:0}
+@keyframes run{to{transform:translateX(-50%)}}
+
+section{padding:110px 0}
+.kick{color:var(--gold);font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+h2{font-size:clamp(32px,5vw,62px);line-height:1;font-weight:700;margin-bottom:16px}
+.sub{color:var(--soft);margin-bottom:48px;max-width:520px}
+
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* услуги — карточки с 3D-наклоном */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px;perspective:1000px}
+.svc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px;transform-style:preserve-3d;transition:transform .25s ease-out,border-color .3s;overflow:hidden}
+.svc::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,50%),rgba(224,180,108,.16),transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
+.svc:hover{border-color:rgba(224,180,108,.4)}
+.svc:hover::before{opacity:1}
+.svc .num{font:700 13px Unbounded;color:var(--soft)}
+.svc h3{margin:44px 0 8px;font:700 22px Unbounded,sans-serif;letter-spacing:-.02em;transform:translateZ(30px)}
+.svc p{color:var(--soft);font-size:15px;min-height:48px}
+.svc .row{display:flex;justify-content:space-between;align-items:end;margin-top:22px;transform:translateZ(20px)}
+.price{font:700 22px Unbounded;color:var(--gold2);white-space:nowrap}
+.dur{color:var(--soft);font-size:13px}
+.svc button{background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:9px 16px;cursor:pointer;font:500 14px Manrope;transition:.2s}
+.svc button:hover{background:var(--gold);color:#1b140b;border-color:var(--gold)}
+
+/* мастера */
+.masters{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.master{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5;border:1px solid var(--line);background:#111}
+.master .ph{position:absolute;inset:0;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.master:hover .ph{transform:scale(1.06)}
+.master .ph::after{content:attr(data-l);position:absolute;right:-10px;bottom:-40px;font:900 260px/1 Unbounded;color:rgba(255,255,255,.07)}
+.master .info{position:absolute;left:0;right:0;bottom:0;padding:24px;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.master h3{font:700 26px Unbounded}
+.master p{color:#cfc6ba;font-size:14px}
+.master .pill{position:absolute;top:18px;left:18px;background:rgba(0,0,0,.45);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px}
+
+/* запись */
+.book{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));border:1px solid var(--line);border-radius:32px;padding:36px;display:grid;grid-template-columns:1fr 320px;gap:36px;overflow:hidden}
+.book::before{content:"";position:absolute;width:500px;height:500px;right:-150px;top:-200px;background:radial-gradient(closest-side,rgba(224,180,108,.18),transparent);pointer-events:none}
+.steps{display:flex;gap:8px;margin-bottom:30px}
+.steps div{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;position:relative}
+.steps div::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.steps div.on::after{transform:none}
+.pane{display:none}
+.pane.on{display:block;animation:fade .45s cubic-bezier(.2,.7,.2,1)}
+@keyframes fade{from{opacity:0;transform:translateX(20px)}}
+.pane h3{font:700 24px Unbounded;margin-bottom:18px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.opt{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:16px;padding:15px;cursor:pointer;color:var(--txt);text-align:left;font:500 15px Manrope;transition:border-color .15s,background .15s,transform .15s}
+.opt small{display:block;color:var(--soft);font-size:13px;margin-top:3px}
+.opt:hover{border-color:rgba(224,180,108,.4);transform:translateY(-1px)}
+.opt.sel{border-color:var(--gold);background:rgba(224,180,108,.12);box-shadow:0 0 0 3px rgba(224,180,108,.12)}
+.opt:disabled{opacity:.25;cursor:not-allowed;text-decoration:line-through;transform:none}
+.days,.times{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}
+.days .opt,.times .opt{text-align:center;padding:11px 6px}
+.times{margin-top:16px}
+input{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--txt);font:500 16px Manrope;margin-bottom:12px;transition:border-color .2s}
+input:focus{outline:none;border-color:var(--gold)}
+.err{color:#ff8a7a;font-size:14px;min-height:20px}
+.nav{display:flex;justify-content:space-between;margin-top:26px;gap:10px}
+.summary{position:relative;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:22px;padding:24px;align-self:start}
+.summary h4{font:500 13px Manrope;color:var(--soft);letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px}
+.summary .li{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.summary .li span{color:var(--soft)}
+.summary .li b{text-align:right;font-weight:600}
+.summary .total{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px}
+.summary .total b{font:700 30px Unbounded;color:var(--gold2)}
+.done{text-align:center;padding:24px 0}
+.check{width:88px;height:88px;border-radius:50%;background:rgba(127,210,154,.12);border:1px solid rgba(127,210,154,.4);color:var(--ok);display:grid;place-items:center;font-size:42px;margin:0 auto 20px;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(0) rotate(-90deg)}}
+.done p{color:var(--soft)}
+.code{font:700 34px Unbounded;color:var(--gold2);margin:14px 0}
+
+.reviews{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px}
+.rev .q{font:900 60px/0.6 Unbounded;color:var(--gold);height:30px}
+.rev p{margin:8px 0 18px;font-size:17px}
+.rev span{color:var(--soft);font-size:14px}
+.stars{color:var(--gold);letter-spacing:2px}
+
+footer{border-top:1px solid var(--line);padding:60px 0 40px;color:var(--soft);font-size:14px}
+footer .big{font:900 clamp(60px,15vw,200px)/.85 Unbounded;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px rgba(245,239,230,.15);margin-bottom:30px}
+footer .row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--txt);color:var(--bg);padding:12px 22px;border-radius:999px;font-weight:700;transition:transform .4s cubic-bezier(.2,1.4,.4,1);z-index:50}
+.toast.on{transform:translate(-50%,0)}
+
+@media (max-width:860px){
+ nav a:not(.btn){display:none}
+ .hero .wrap{justify-content:flex-end;padding-bottom:110px}
+ .hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(transparent 30%,rgba(8,7,10,.85) 75%);pointer-events:none}
+ .book{grid-template-columns:1fr;padding:22px;border-radius:24px}
+ section{padding:80px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
+</head>
+<body>
+<header>
+  <a class="logo" href="#">Бри<i>тва</i></a>
+  <nav><a href="#services">Услуги</a><a href="#masters">Мастера</a><a href="#reviews">Отзывы</a><a class="btn" href="#book">Записаться</a></nav>
+</header>
+
+<section class="hero" style="padding:0">
+  <canvas id="gl"></canvas>
+  <div class="wrap">
+    <div class="tag" id="openTag">Сейчас открыто · до 21:00</div>
+    <h1 class="disp">Острый <span class="gr">стиль.</span><br>Без очереди.</h1>
+    <p class="lead">Мужские стрижки, бритьё опасной бритвой и уход за бородой. Запись онлайн за 30 секунд.</p>
+    <div class="cta"><a class="btn" href="#book">Выбрать время →</a><a class="btn ghost" href="#services">Цены</a></div>
+  </div>
+  <div class="scroll">листайте</div>
+</section>
+
+<div class="marquee"><div>
+  <span>Стрижки</span><b>✦</b><span>Борода</span><b>✦</b><span>Королевское бритьё</span><b>✦</b><span>Фейд</span><b>✦</b>
+  <span>Стрижки</span><b>✦</b><span>Борода</span><b>✦</b><span>Королевское бритьё</span><b>✦</b><span>Фейд</span><b>✦</b>
+</div></div>
+
+<section id="services"><div class="wrap">
+  <div class="kick reveal">Прайс</div>
+  <h2 class="disp reveal">Услуги</h2>
+  <p class="sub reveal">Цены фиксированные. Нажмите «Записаться», и услуга сразу выберется в форме.</p>
+  <div class="grid" id="svcGrid"></div>
+</div></section>
+
+<section id="masters" style="padding-top:0"><div class="wrap">
+  <div class="kick reveal">Команда</div>
+  <h2 class="disp reveal">Мастера</h2>
+  <p class="sub reveal">У каждого своё расписание: свободные окна видно при записи.</p>
+  <div class="masters" id="mGrid"></div>
+</div></section>
+
+<section id="book" style="padding-top:0"><div class="wrap">
+  <div class="kick reveal">4 шага</div>
+  <h2 class="disp reveal">Онлайн-запись</h2>
+  <p class="sub reveal">Без звонков. Занятое время выбрать нельзя.</p>
+  <div class="book reveal">
+    <div>
+      <div class="steps" id="steps"><div></div><div></div><div></div><div></div></div>
+      <div class="pane" data-p="0"><h3>Что делаем?</h3><div class="opts" id="pSvc"></div></div>
+      <div class="pane" data-p="1"><h3>К кому?</h3><div class="opts" id="pM"></div></div>
+      <div class="pane" data-p="2"><h3>Когда?</h3><div class="opts days" id="pDay"></div><div class="opts times" id="pTime"></div></div>
+      <div class="pane" data-p="3"><h3>Ваши контакты</h3>
+        <input id="name" placeholder="Имя" autocomplete="given-name">
+        <input id="phone" placeholder="+7 (___) ___-__-__" inputmode="tel" autocomplete="tel">
+        <div class="err" id="err"></div></div>
+      <div class="pane" data-p="4"><div class="done"><div class="check">✓</div><h3 id="doneT">Готово!</h3><p id="doneP"></p><div class="code" id="code"></div><p>Покажите номер записи администратору</p></div></div>
+      <div class="nav" id="navBtns"><button class="btn ghost" id="back">← Назад</button><button class="btn" id="next">Далее</button></div>
+    </div>
+    <aside class="summary"><h4>Ваша запись</h4>
+      <div class="li"><span>Услуга</span><b id="sSvc">—</b></div>
+      <div class="li"><span>Мастер</span><b id="sM">—</b></div>
+      <div class="li"><span>Когда</span><b id="sT">—</b></div>
+      <div class="total"><span>Итого</span><b id="sP">0 ₽</b></div>
+    </aside>
+  </div>
+</div></section>
+
+<section id="reviews" style="padding-top:0"><div class="wrap">
+  <div class="kick reveal">4.9 из 5</div>
+  <h2 class="disp reveal">Отзывы</h2>
+  <p class="sub reveal">Что говорят гости</p>
+  <div class="reviews">
+    <div class="rev reveal"><div class="q">“</div><p>Записался с телефона за минуту, пришёл — меня уже ждали. Фейд идеальный.</p><span class="stars">★★★★★</span> <span>· Артём</span></div>
+    <div class="rev reveal"><div class="q">“</div><p>Королевское бритьё — отдельный вид отдыха. Горячее полотенце, тишина, кайф.</p><span class="stars">★★★★★</span> <span>· Максим</span></div>
+    <div class="rev reveal"><div class="q">“</div><p>Привёл сына на первую стрижку. Мастер нашёл подход, сын просится снова.</p><span class="stars">★★★★★</span> <span>· Игорь</span></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="big">БРИТВА</div>
+  <div class="row">
+    <div>Демо-проект для портфолио: барбершоп вымышленный.<br>3D-сцена на Three.js, запись на чистом JavaScript.</div>
+    <div>Сделал Лев · <a href="https://github.com/davnat0111-gif">GitHub</a> · <a href="https://t.me/Levont1y_1">Telegram</a></div>
+  </div>
+</div></footer>
+<div class="toast" id="toast"></div>
+
+<!-- 3D-сцена: вращающийся столб барбера под стеклом и опасная бритва -->
+<script type="module">
+import * as THREE from 'three';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+const canvas=document.getElementById('gl');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true})}catch(e){canvas.remove();throw e}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(32,1,.1,100);
+
+// Студийное окружение для отражений: тёмная комната с софтбоксами
+{const env=new THREE.Scene();env.background=new THREE.Color(0x050405);
+ const box=(w,h,c,i,p,r)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:new THREE.Color(c).multiplyScalar(i),side:THREE.DoubleSide}));m.position.set(...p);m.lookAt(0,0,0);env.add(m)};
+ box(6,2,0xffffff,3.2,[0,6,2]);box(2,8,0xffd7a0,2.4,[-6,1,3]);box(2,8,0xa0b8ff,1.2,[6,0,-2]);box(8,1,0xffb070,1.5,[0,-5,-4]);box(3,3,0xffffff,1.6,[3,2,7]);
+ const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(env,.04).texture;}
+
+const world=new THREE.Group();scene.add(world);
+
+// --- Столб барбера ---
+const pole=new THREE.Group();world.add(pole);
+const stripeTex=(()=>{const c=document.createElement('canvas');c.width=c.height=512;const g=c.getContext('2d');
+ g.fillStyle='#f4efe8';g.fillRect(0,0,512,512);
+ const band=(col,off)=>{g.fillStyle=col;for(let k=-2;k<3;k++){g.beginPath();const o=k*512+off;g.moveTo(o,512);g.lineTo(o+120,512);g.lineTo(o+120+512,0);g.lineTo(o+512,0);g.fill()}};
+ band('#c8221c',0);band('#1d3f8f',256);
+ const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2.4);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;return t})();
+const inner=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,3.2,64,1,true),new THREE.MeshStandardMaterial({map:stripeTex,roughness:.35,emissive:0xffffff,emissiveMap:stripeTex,emissiveIntensity:.25}));
+pole.add(inner);
+const glass=new THREE.Mesh(new THREE.CylinderGeometry(.52,.52,3.2,64,1,true),new THREE.MeshPhysicalMaterial({color:0xffffff,metalness:0,roughness:.03,transmission:1,thickness:.25,ior:1.45,transparent:true,opacity:1,envMapIntensity:1.6,clearcoat:1}));
+pole.add(glass);
+const chrome=new THREE.MeshStandardMaterial({color:0xffffff,metalness:1,roughness:.12});
+const gold=new THREE.MeshStandardMaterial({color:0xe0b46c,metalness:1,roughness:.22});
+for(const s of[1,-1]){
+ const cap=new THREE.Mesh(new THREE.CylinderGeometry(.6,.6,.22,64),chrome);cap.position.y=s*1.71;pole.add(cap);
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.6,.045,16,80),gold);ring.rotation.x=Math.PI/2;ring.position.y=s*1.6;pole.add(ring);
+ const ring2=ring.clone();ring2.position.y=s*1.82;pole.add(ring2);
+}
+const dome=new THREE.Mesh(new THREE.SphereGeometry(.5,64,32,0,Math.PI*2,0,Math.PI/2),chrome);dome.position.y=1.82;pole.add(dome);
+const knob=new THREE.Mesh(new THREE.SphereGeometry(.12,32,16),gold);knob.position.y=2.36;pole.add(knob);
+const base=new THREE.Mesh(new THREE.CylinderGeometry(.35,.55,.4,64),chrome);base.position.y=-2.02;pole.add(base);
+const bulb=new THREE.PointLight(0xffe0b0,6,4,2);bulb.position.y=0;pole.add(bulb);
+
+// --- Опасная бритва ---
+const razor=new THREE.Group();world.add(razor);
+const bladeShape=new THREE.Shape();
+bladeShape.moveTo(0,-.09);bladeShape.lineTo(2.05,-.12);bladeShape.quadraticCurveTo(2.42,-.1,2.45,.22);
+bladeShape.quadraticCurveTo(2.38,.36,2.1,.36);bladeShape.lineTo(.25,.3);bladeShape.quadraticCurveTo(0,.28,0,-.09);
+const bladeGeo=new THREE.ExtrudeGeometry(bladeShape,{depth:.025,bevelEnabled:true,bevelThickness:.012,bevelSize:.012,bevelSegments:3,curveSegments:24});
+bladeGeo.translate(0,0,-.012);
+const blade=new THREE.Mesh(bladeGeo,new THREE.MeshStandardMaterial({color:0xdfe5ec,metalness:.85,roughness:.22,envMapIntensity:2.2,emissive:0x2b3038}));
+const edge=new THREE.Mesh(new THREE.BoxGeometry(2.0,.012,.03),new THREE.MeshStandardMaterial({color:0xffffff,metalness:1,roughness:.02}));edge.position.set(1.12,-.11,0);
+const bladePivot=new THREE.Group();bladePivot.add(blade,edge);razor.add(bladePivot);
+const tang=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.03,24),gold);tang.rotation.x=Math.PI/2;
+const handleShape=new THREE.Shape();
+handleShape.moveTo(-.12,-.16);handleShape.lineTo(2.35,-.13);handleShape.quadraticCurveTo(2.55,-.12,2.55,0);handleShape.quadraticCurveTo(2.55,.14,2.35,.15);handleShape.lineTo(-.12,.16);handleShape.quadraticCurveTo(-.25,0,-.12,-.16);
+const hGeo=new THREE.ExtrudeGeometry(handleShape,{depth:.05,bevelEnabled:true,bevelThickness:.03,bevelSize:.03,bevelSegments:4,curveSegments:20});
+const handleMat=new THREE.MeshPhysicalMaterial({color:0xeadcc4,roughness:.35,clearcoat:1,clearcoatRoughness:.08,emissive:0x2a2018});
+const hA=new THREE.Mesh(hGeo,handleMat);hA.position.z=.03;
+const hB=new THREE.Mesh(hGeo,handleMat);hB.position.z=-.11;
+const handle=new THREE.Group();handle.add(hA,hB);razor.add(handle,tang);
+for(const x of[.0,2.38]){const pin=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.2,20),gold);pin.rotation.x=Math.PI/2;pin.position.set(x,0,-.02);razor.add(pin)}
+const inlay=new THREE.Mesh(new THREE.BoxGeometry(1.4,.03,.01),gold);inlay.position.set(1.2,0,.115);razor.add(inlay);
+
+// --- Золотая пыль ---
+const N=700,pos=new Float32Array(N*3),spd=new Float32Array(N);
+for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*14;pos[i*3+1]=(Math.random()-.5)*9;pos[i*3+2]=(Math.random()-.5)*8-1;spd[i]=.05+Math.random()*.15}
+const dustGeo=new THREE.BufferGeometry();dustGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+const dot=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const g=c.getContext('2d');const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,'rgba(255,220,160,1)');r.addColorStop(.3,'rgba(255,190,110,.5)');r.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=r;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)})();
+const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({size:.07,map:dot,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}));
+scene.add(dust);
+
+scene.add(new THREE.AmbientLight(0xffffff,.15));
+const key=new THREE.DirectionalLight(0xfff0dd,1.4);key.position.set(3,5,4);scene.add(key);
+const rim=new THREE.DirectionalLight(0xe0b46c,2.2);rim.position.set(-4,1,-3);scene.add(rim);
+
+const composer=new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(1,1),.45,.6,.82);composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+let wide=true;
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();
+ wide=w/h>1.45;
+ if(wide){world.position.set(2.7,0,0);camera.position.set(0,0,10.5)}else{world.position.set(.3,2.4,0);camera.position.set(0,0,Math.max(12.5,9.5/(w/h)))}}
+addEventListener('resize',resize);resize();
+
+const mouse={x:0,y:0,tx:0,ty:0};
+addEventListener('pointermove',e=>{mouse.tx=e.clientX/innerWidth*2-1;mouse.ty=e.clientY/innerHeight*2-1});
+let visible=true;new IntersectionObserver(([e])=>visible=e.isIntersecting).observe(canvas);
+
+const clock=new THREE.Clock();let t=0;
+function frame(){requestAnimationFrame(frame);if(!visible)return;
+ const dt=Math.min(clock.getDelta(),.05);t+=dt;
+ const sc=Math.min(scrollY/innerHeight,1);
+ mouse.x+=(mouse.tx-mouse.x)*.05;mouse.y+=(mouse.ty-mouse.y)*.05;
+ stripeTex.offset.y-=dt*.35;
+ pole.rotation.y=t*.15+sc*2;pole.position.y=Math.sin(t*.8)*.08;pole.rotation.z=-.08;
+ // бритва раскрывается и закрывается, а при скролле раскрывается полностью
+ const open=THREE.MathUtils.lerp(.55+.45*Math.sin(t*.7),1,sc);
+ bladePivot.rotation.z=open*Math.PI*.92;
+ razor.position.set(wide?.45:-.6,-1.25+Math.sin(t*.9+1)*.12-sc*.6,1.9);
+ razor.rotation.set(.18+Math.sin(t*.5)*.1+mouse.y*.2,-.25+mouse.x*.35,-.18+Math.sin(t*.6)*.06);
+ razor.scale.setScalar(wide?.72:.6);
+ world.rotation.y=mouse.x*.18;world.rotation.x=mouse.y*.08;
+ camera.position.y=-sc*1.2;camera.lookAt(world.position.x*.55,camera.position.y*.5,0);
+ const p=dustGeo.attributes.position.array;for(let i=0;i<N;i++){p[i*3+1]+=spd[i]*dt;p[i*3]+=Math.sin(t+i)*dt*.03;if(p[i*3+1]>4.5)p[i*3+1]=-4.5}
+ dustGeo.attributes.position.needsUpdate=true;
+ composer.render();
+}
+frame();
+</script>
+
+<!-- Логика сайта и онлайн-записи -->
+<script>
+const SVC=[
+ {id:'cut',n:'Мужская стрижка',d:'Консультация, мытьё, укладка',p:1800,t:60},
+ {id:'fade',n:'Фейд',d:'Плавный переход машинкой',p:2000,t:60},
+ {id:'beard',n:'Борода',d:'Форма, контур, горячее полотенце',p:1200,t:30},
+ {id:'shave',n:'Королевское бритьё',d:'Опасная бритва и уход',p:1500,t:45},
+ {id:'combo',n:'Стрижка + борода',d:'Полный образ за один визит',p:2700,t:90},
+ {id:'kid',n:'Детская стрижка',d:'До 12 лет',p:1200,t:45},
+];
+const M=[
+ {id:'a',n:'Алекс',r:'Фейды и короткие стрижки',g:'linear-gradient(160deg,#5a3f22,#1b130c)',y:'8 лет опыта',x:7},
+ {id:'d',n:'Дамир',r:'Борода и бритьё',g:'linear-gradient(160deg,#5b2a22,#170c0a)',y:'6 лет опыта',x:3},
+ {id:'s',n:'Сергей',r:'Классика и детские стрижки',g:'linear-gradient(160deg,#2c3d4f,#0c1117)',y:'10 лет опыта',x:5},
+ {id:'any',n:'Любой',r:'Первый свободный',x:0},
+];
+const S={svc:null,m:null,day:null,time:null,step:0};
+const $=id=>document.getElementById(id);
+const rub=v=>v.toLocaleString('ru-RU')+'\u00a0₽';
+
+$('svcGrid').innerHTML=SVC.map((s,i)=>`<div class="svc reveal"><div class="num">0${i+1}</div><h3>${s.n}</h3><p>${s.d}</p><div class="row"><div><div class="price">${rub(s.p)}</div><div class="dur">${s.t} мин</div></div><button data-s="${s.id}">Записаться</button></div></div>`).join('');
+$('mGrid').innerHTML=M.filter(m=>m.id!=='any').map(m=>`<div class="master reveal"><div class="ph" style="background:${m.g}" data-l="${m.n[0]}"></div><div class="pill">${m.y}</div><div class="info"><h3>${m.n}</h3><p>${m.r}</p></div></div>`).join('');
+document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{S.svc=SVC.find(s=>s.id===b.dataset.s);go(1);$('book').scrollIntoView()});
+
+// 3D-наклон карточек и подсветка под курсором
+document.querySelectorAll('.svc').forEach(c=>{
+ c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+  c.style.transform=`rotateX(${(.5-y)*10}deg) rotateY(${(x-.5)*12}deg)`;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%')});
+ c.addEventListener('pointerleave',()=>c.style.transform='')});
+
+// Появление блоков при прокрутке
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%3)*90+'ms';io.observe(el)});
+
+// Открыто ли сейчас
+{const h=new Date().getHours();if(h<10||h>=21)$('openTag').textContent='Сейчас закрыто · откроемся в 10:00'}
+
+const days=[...Array(14)].map((_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+i);return d});
+const fmtD=d=>d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+const wd=d=>['вс','пн','вт','ср','чт','пт','сб'][d.getDay()];
+const slots=[];for(let h=10;h<21;h++){slots.push(h+':00');slots.push(h+':30')}
+function busy(day,t,m){return (day.getDate()*31+slots.indexOf(t)*7+(m?m.x:1)*13)%10<3}
+function past(day,t){const [h,mm]=t.split(':').map(Number);const d=new Date(day);d.setHours(h,mm);return d<new Date()}
+
+function opt(html,sel,dis,fn){const b=document.createElement('button');b.className='opt'+(sel?' sel':'');b.innerHTML=html;b.disabled=!!dis;b.onclick=fn;return b}
+function render(){
+ const pSvc=$('pSvc');pSvc.innerHTML='';SVC.forEach(s=>pSvc.append(opt(`${s.n}<small>${rub(s.p)} · ${s.t} мин</small>`,S.svc===s,0,()=>{S.svc=s;render()})));
+ const pM=$('pM');pM.innerHTML='';M.forEach(m=>pM.append(opt(`${m.n}<small>${m.r}</small>`,S.m===m,0,()=>{S.m=m;S.time=null;render()})));
+ const pDay=$('pDay');pDay.innerHTML='';days.forEach(d=>pDay.append(opt(`${fmtD(d)}<small>${wd(d)}</small>`,S.day&&+S.day===+d,0,()=>{S.day=d;S.time=null;render()})));
+ const pT=$('pTime');pT.innerHTML='';if(S.day){let free=0;slots.forEach(t=>{const dis=past(S.day,t)||busy(S.day,t,S.m);if(!dis)free++;pT.append(opt(t,S.time===t,dis,()=>{S.time=t;render()}))});if(!free)pT.innerHTML='<p style="color:var(--soft)">На этот день мест нет — выберите другой.</p>'}
+ document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',+p.dataset.p===S.step));
+ document.querySelectorAll('#steps div').forEach((d,i)=>d.classList.toggle('on',i<=Math.min(S.step,3)));
+ $('sSvc').textContent=S.svc?S.svc.n:'—';$('sM').textContent=S.m?S.m.n:'—';
+ $('sT').textContent=S.day&&S.time?`${fmtD(S.day)}, ${S.time}`:'—';$('sP').textContent=rub(S.svc?S.svc.p:0);
+ $('back').style.visibility=S.step>0&&S.step<4?'visible':'hidden';
+ $('navBtns').style.display=S.step===4?'none':'flex';
+ $('next').textContent=S.step===3?'Записаться ✓':'Далее →';
+ $('next').disabled=[!S.svc,!S.m,!(S.day&&S.time),false][S.step];
+}
+function go(n){S.step=n;render()}
+$('back').onclick=()=>go(S.step-1);
+$('next').onclick=()=>{
+ if(S.step<3)return go(S.step+1);
+ const name=$('name').value.trim(),digits=$('phone').value.replace(/\D/g,'');
+ if(name.length<2)return $('err').textContent='Введите имя';
+ if(digits.length!==11)return $('err').textContent='Проверьте номер: нужно 11 цифр';
+ $('err').textContent='';
+ $('doneT').textContent=`${name}, ждём вас!`;
+ $('doneP').textContent=`${S.svc.n} · ${S.m.n} · ${fmtD(S.day)}, ${S.time}`;
+ $('code').textContent='#'+(1000+Math.floor(Math.random()*9000));
+ go(4);toast('Запись создана');
+};
+$('phone').addEventListener('input',e=>{let d=e.target.value.replace(/\D/g,'');if(d[0]==='8')d='7'+d.slice(1);if(d&&d[0]!=='7')d='7'+d;d=d.slice(0,11);
+ const p=[d.slice(1,4),d.slice(4,7),d.slice(7,9),d.slice(9,11)];e.target.value=d?'+7'+(p[0]?` (${p[0]}`:'')+(p[0].length===3?')':'')+(p[1]?' '+p[1]:'')+(p[2]?'-'+p[2]:'')+(p[3]?'-'+p[3]:''):''});
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('on');setTimeout(()=>el.classList.remove('on'),2200)}
+render();
+</script>
+</body>
+</html>
